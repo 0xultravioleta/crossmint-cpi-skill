@@ -1,0 +1,27 @@
+{
+  "name": "crossmint-cpi-skill",
+  "version": "0.1.0",
+  "description": "A lobster.cash-compatible skill that teaches AI agents the Solana CPI inner-instruction nuance when paying x402 endpoints from Crossmint smart wallets.",
+  "keywords": [
+    "crossmint",
+    "lobster-cash",
+    "skill",
+    "x402",
+    "solana",
+    "cpi",
+    "smart-wallet",
+    "claude-skill",
+    "ai-agent"
+  ],
+  "license": "MIT",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xultravioleta/crossmint-cpi-skill"
+  },
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "LICENSE"
+  ]
+}
