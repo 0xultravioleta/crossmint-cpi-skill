@@ -191,7 +191,7 @@ invocation.
 Instead, verify by reading `postTokenBalances` and `preTokenBalances`
 from the transaction meta, and check that the destination ATA balance
 increased by at least the required amount. This is what
-[Faremeter](https://github.com/faremeter) does, and it is the approach
+[Corbits](https://www.corbits.dev) does, and it is the approach
 the companion
 [crossmint-wallets-mcp](https://github.com/0xultravioleta/crossmint-wallets-mcp)
 paywall server uses in its verification path. Example:
