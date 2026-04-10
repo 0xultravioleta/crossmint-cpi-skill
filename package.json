@@ -14,7 +14,7 @@
     "ai-agent"
   ],
   "license": "MIT",
-  "author": "",
+  "author": "Saul Jaramillo <saul@lxhxr.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/0xultravioleta/crossmint-cpi-skill"

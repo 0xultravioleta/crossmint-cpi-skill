@@ -1,52 +1,43 @@
 # crossmint-cpi-skill
 
-> A lobster.cash-compatible skill that teaches AI agents the Solana CPI
-> inner-instruction nuance when paying x402 endpoints from Crossmint smart
-> wallets.
+A lobster.cash-compatible skill that teaches AI agents the Solana CPI inner-instruction nuance when paying x402 endpoints from Crossmint smart wallets.
 
-**Status:** scaffold — full content populated during Phase 2G.
+## Why this exists
 
-## Why this skill exists
+Crossmint smart wallets on Solana are PDAs (program-derived addresses). When an agent transfers USDC from a Crossmint wallet, the transfer is not a top-level SPL instruction — it happens inside a cross-program invocation (CPI), one level down.
 
-Crossmint smart wallets on Solana are PDAs (program-derived addresses) owned
-by the Crossmint wallet program. When an AI agent constructs a Solana
-transaction that transfers USDC out of a Crossmint wallet to pay an x402
-endpoint, the transfer cannot be a direct SPL token transfer — it must be
-issued as a cross-program invocation (CPI) *inner instruction* from the
-Crossmint wallet program, signed by the Crossmint API on the agent's behalf.
+This means:
+- Hand-rolled SPL `TransferChecked` instructions fail with "signer not found"
+- Naive x402 facilitators miss the nested transfer and reject valid payments
+- No public Crossmint doc, Solana Foundation guide, or lobster.cash skill explains this
 
-None of the 13 currently certified lobster.cash skills cover this technical
-nuance. Agents that don't know about it will construct malformed transactions
-and waste cycles debugging "signer not found" errors.
+This skill teaches agents the correct pattern: use `wallet.send()` from `@crossmint/wallets-sdk`, which handles CPI wrapping, signing via the recovery signer, and gasless fee payment automatically.
 
-## What this skill teaches
+## What the skill covers
 
-1. **The difference between an SPL token transfer and a CPI inner
-   instruction** — when and why each is required.
-2. **How to construct the correct transaction** for a Crossmint
-   wallet-to-EOA USDC transfer that clears an x402 payment challenge.
-3. **How to hand the unsigned transaction to `@crossmint/wallets-sdk`**
-   via `SolanaWallet.sendTransaction({ serializedTransaction })` so the
-   Crossmint API signs it server-side with the recovery signer.
-4. **How to interpret the transaction signature** returned by Crossmint
-   and replay the x402 request with an `X-PAYMENT` header.
-
-## Companion artifact
-
-This skill is paired with
-[`crossmint-wallets-mcp`](https://github.com/0xultravioleta/crossmint-wallets-mcp),
-an MCP server that exposes the same primitives as tools for Claude Desktop,
-Continue.dev, Cline, Codex CLI, and any MCP-native client. Together they
-cover the two gaps in Crossmint's agentic commerce stack — the MCP server
-fills the transport gap for MCP-native clients, and this skill fills the
-knowledge gap for any LLM that needs to hand-roll the transaction.
+- The CPI inner instruction pattern explained in plain English
+- What NOT to do (the wrong-way code that fails)
+- The correct `wallet.send()` recipe
+- Full x402 payment loop from a Crossmint smart wallet
+- Facilitator verification guidance (use `postTokenBalances`, not top-level instruction parsing)
+- Decision tree for common scenarios
+- Error table with causes and fixes
 
 ## Installation
 
-Populated during Phase 2G per
-`_internal/planning/plans/03-mcp-build-and-skill-plan.md`.
+```bash
+npx skills add https://github.com/0xultravioleta/crossmint-cpi-skill --global --yes
+```
+
+Installs across 28+ agents: Claude Code, Cursor, Cline, Codex, OpenClaw, Gemini CLI, and more.
+
+## Companion artifact
+
+This skill is paired with [`crossmint-wallets-mcp`](https://github.com/0xultravioleta/crossmint-wallets-mcp) — an MCP server that exposes the same wallet primitives as tools for Claude Desktop, Continue.dev, Cline, Codex CLI, and any MCP-native client.
+
+- The **MCP server** fills the transport gap (MCP clients can't install lobster.cash skills)
+- The **CPI skill** fills the knowledge gap (no skill teaches the inner-instruction nuance)
 
 ## License
 
-MIT — so that Crossmint can fork this repo into the official
-`@crossmint` organization with zero friction.
+MIT — fork into `@crossmint` with zero friction.
